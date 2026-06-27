@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generator | ContentSpark AI</title>
+  <script>
+    if (!localStorage.getItem('authenticated')) {
+      window.location.href = './auth.html';
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../CSS/style.css" />
+  <link rel="stylesheet" href="../CSS/saas-ui.css" />
+  <style>
+    .generator-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 500px;
+      margin-top: 1.5rem;
+    }
+
+    .generator-form label {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .generator-input {
+      padding: 1rem 1.2rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .generator-input:focus {
+      border-color: var(--primary);
+      background: rgba(255,255,255,0.05);
+      box-shadow: 0 0 0 4px rgba(204,255,0,0.15);
+    }
+
+    .generator-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .generate-btn {
+      padding: 1rem 2rem;
+      border-radius: 16px;
+      border: none;
+      background: linear-gradient(135deg, var(--primary), #9ff000);
+      color: #000;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .generate-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(204,255,0,0.25);
+    }
+
+    .generate-btn i {
+      width: 20px;
+      height: 20px;
+    }
+
+    .idea-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.5rem;
+      background: rgba(255,255,255,0.02);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+
+    .idea-card:hover {
+      transform: translateX(8px);
+      background: rgba(255,255,255,0.04);
+      border-color: rgba(204,255,0,0.2);
+    }
+
+    .idea-fav-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      flex-shrink: 0;
+    }
+
+    .idea-fav-btn:hover {
+      background: rgba(204,255,0,0.15);
+      border-color: var(--primary);
+    }
+
+    .idea-fav-btn.favorited {
+      background: rgba(204,255,0,0.2);
+      border-color: var(--primary);
+    }
+
+    .idea-fav-btn i {
+      width: 20px;
+      height: 20px;
+    }
+
+    .idea-content {
+      flex: 1;
+    }
+
+    .idea-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .idea-preview {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .template-chip {
+      padding: 0.8rem 1rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .template-chip:hover {
+      background: rgba(204,255,0,0.15);
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: rgba(255,255,255,0.02);
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .generator-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .generator-icon-wrapper {
+      width: 60px;
+      height: 60px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--primary), #9ff000);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .generator-icon-wrapper i {
+      color: #000;
+      width: 32px;
+      height: 32px;
+    }
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(204,255,0,0.2); }
+  50% { box-shadow: 0 0 40px rgba(204,255,0,0.4); }
+}
+
+.generate-btn {
+  animation: pulse-glow 3s infinite;
+}
+
+@media (max-width: 768px) {
+  .generator-form {
+    max-width: 100%;
+  }
+
+  .idea-card {
+    padding: 1rem;
+    gap: 0.8rem;
+  }
+
+  .idea-fav-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .template-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .template-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .generator-input {
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .generate-btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .idea-title {
+    font-size: 1rem;
+  }
+
+  .idea-preview {
+    font-size: 0.85rem;
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-icon"><i data-lucide="sparkles"></i></div>
+        <div class="logo-text">
+          <h2>ContentSpark</h2>
+          <span>AI Workspace</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="../index.html" class="nav-link"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+        <a href="#" class="nav-link active"><i data-lucide="wand-sparkles"></i><span>Generator</span></a>
+        <a href="./templates.html" class="nav-link"><i data-lucide="files"></i><span>Templates</span></a>
+        <a href="./favorites.html" class="nav-link"><i data-lucide="heart"></i><span>Favorites</span></a>
+        <a href="./history.html" class="nav-link"><i data-lucide="history"></i><span>History</span></a>
+        <a href="./analytics.html" class="nav-link"><i data-lucide="bar-chart-3"></i><span>Analytics</span></a>
+        <a href="./pricing.html" class="nav-link"><i data-lucide="credit-card"></i><span>Pricing</span></a>
+        <a href="./settings.html" class="nav-link"><i data-lucide="settings"></i><span>Settings</span></a>
+        <a href="#" class="nav-link" id="logout-btn"><i data-lucide="log-out"></i><span>Logout</span></a>
+      </nav>
+
+      <div class="premium-card upgrade-card">
+        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;">
+          <i data-lucide="crown" style="color:var(--primary);"></i>
+          <h3 style="margin:0;">Pro Workspace</h3>
+        </div>
+        <ul style="list-style:none;padding:0;margin:0 0 1rem 0;color:var(--text-muted);font-size:.85rem;line-height:2;">
+          <li style="display:flex;align-items:center;gap:.3rem;"><i data-lucide="check" style="width:14px;height:14px;color:var(--primary);"></i> Unlimited AI generations</li>
+          <li style="display:flex;align-items:center;gap:.3rem;"><i data-lucide="check" style="width:14px;height:14px;color:var(--primary);"></i> Advanced analytics</li>
+          <li style="display:flex;align-items:center;gap:.3rem;"><i data-lucide="check" style="width:14px;height:14px;color:var(--primary);"></i> Premium templates</li>
+          <li style="display:flex;align-items:center;gap:.3rem;"><i data-lucide="check" style="width:14px;height:14px;color:var(--primary);"></i> Priority support</li>
+        </ul>
+        <button id="upgrade-btn" type="button" class="hero-btn">Upgrade Now</button>
+      </div>
+
+      <div id="pro-modal-backdrop" class="modal-backdrop" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pro-modal-title">
+          <div class="modal-header">
+            <h3 id="pro-modal-title">Go Pro</h3>
+            <button id="pro-modal-close" class="modal-close" type="button" aria-label="Close">&times;</button>
+          </div>
+          <p>Select a plan to unlock the Pro Workspace (demo).</p>
+          <div class="modal-actions">
+            <button class="pro-select" data-plan="monthly" type="button">Monthly Pro</button>
+            <button class="pro-select" data-plan="yearly" type="button">Yearly Pro</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <button class="upgrade-card-mobile" id="mobile-upgrade-btn">
+      <i data-lucide="crown"></i> Pro
+    </button>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="search-box">
+          <i data-lucide="search"></i>
+          <input type="text" placeholder="Search anything..." />
+        </div>
+
+<div class="topbar-actions">
+           <button class="icon-btn" id="notification-btn" type="button" aria-label="Notifications">
+             <i data-lucide="bell"></i>
+             <span class="notification-badge" id="notification-count" style="display:none;">0</span>
+           </button>
+
+           <div class="notification-popup" id="notification-popup">
+             <div class="notification-item">No notifications yet</div>
+           </div>
+
+           <button class="icon-btn" id="theme-toggle-btn" type="button" aria-label="Toggle theme">
+             <i data-lucide="moon"></i>
+           </button>
+           <div class="profile profile-clickable" id="profile-trigger">
+             <div class="avatar">S</div>
+             <div class="profile-info">
+               <strong>Saad</strong>
+               <span>Creator</span>
+             </div>
+           </div>
+
+           <div class="profile-popup" id="profile-popup">
+             <div class="profile-popup-header">
+               <div class="profile-popup-avatar">S</div>
+               <div>
+                 <div style="font-weight:600;">Saad</div>
+                 <div style="color:var(--text-muted);font-size:.85rem;">Creator Plan</div>
+               </div>
+             </div>
+             <div>
+               <div class="profile-stat">
+                 <span class="profile-stat-label">Ideas Generated</span>
+                 <span class="profile-stat-value" id="profile-stat-ideas">0</span>
+               </div>
+               <div class="profile-stat">
+                 <span class="profile-stat-label">Favorites</span>
+                 <span class="profile-stat-value" id="profile-stat-favs">0</span>
+               </div>
+             </div>
+             <button id="view-profile-btn" class="hero-btn" style="width:100%;padding:.8rem;">
+               View Full Profile
+             </button>
+           </div>
+         </div>
+       </header>
+
+      <section class="hero" style="margin-bottom:2rem;">
+        <div class="hero-content">
+          <span class="hero-badge"><i data-lucide="wand-sparkles"></i>&nbsp;Idea Generator</span>
+          <h1>AI-Powered Content Creation</h1>
+          <p>Enter a topic, select a template, and generate high-quality content instantly.</p>
+
+          <form class="generator-form" id="generator-form" autocomplete="off">
+            <label for="gen-topic">Topic / Platform</label>
+            <input id="gen-topic" type="text" placeholder="e.g. SaaS landing page, Instagram reels, product marketing" class="generator-input" />
+            <button id="gen-btn" class="generate-btn" type="submit">
+              <i data-lucide="sparkles"></i>
+              Generate Ideas
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <div class="content-grid">
+        <div class="glass-card">
+          <div class="card-header">
+            <h2>Generated Ideas</h2>
+          </div>
+          <div id="gen-results"></div>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-header">
+            <h2>Quick Templates</h2>
+          </div>
+          <div id="template-suggest" class="template-grid"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>lucide.createIcons();</script>
+  <script src="../JS/data.js"></script>
+  <script src="../JS/ui.js"></script>
+  <script src="../JS/app.js"></script>
+</body>
+</html>

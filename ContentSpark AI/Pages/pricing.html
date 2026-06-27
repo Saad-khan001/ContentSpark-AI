@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pricing | ContentSpark AI</title>
+  <script>
+    const authenticated = localStorage.getItem('authenticated');
+    if (!authenticated) {
+      window.location.replace('./auth.html');
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../CSS/style.css" />
+  <link rel="stylesheet" href="../CSS/saas-ui.css" />
+  <style>
+    .pricing-container {
+      padding: 4rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .pricing-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .pricing-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: .5rem;
+      background: linear-gradient(135deg, #fff, var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .pricing-header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .pricing-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2rem;
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pricing-card.popular {
+      border-color: var(--primary);
+    }
+
+    .pricing-card.popular::before {
+      content: "MOST POPULAR";
+      position: absolute;
+      top: 12px;
+      right: -30px;
+      background: var(--primary);
+      color: #000;
+      font-size: .7rem;
+      font-weight: 700;
+      padding: .3rem 3rem;
+      transform: rotate(45deg);
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .plan-name {
+      font-size: 1.5rem;
+      margin-bottom: .5rem;
+    }
+
+    .plan-price {
+      font-size: 3rem;
+      font-weight: 800;
+      margin: 1rem 0;
+    }
+
+    .plan-price span {
+      font-size: 1rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .plan-features {
+      list-style: none;
+      padding: 0;
+      margin: 2rem 0;
+      text-align: left;
+    }
+
+    .plan-features li {
+      padding: .7rem 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .plan-features li:last-child {
+      border-bottom: none;
+    }
+
+    .select-btn {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 16px;
+      border: none;
+      background: var(--primary);
+      color: #000;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .select-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(204,255,0,.25);
+    }
+
+    @media (max-width: 768px) {
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="pricing-container">
+    <div class="pricing-header">
+      <span class="hero-badge"><i data-lucide="crown"></i>&nbsp;Pricing</span>
+      <h1>Choose Your Plan</h1>
+      <p>Simple, transparent pricing for teams of all sizes</p>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <h3 class="plan-name">Free</h3>
+        <div class="plan-price">$0<span>/month</span></div>
+        <ul class="plan-features">
+          <li><i data-lucide="check" style="color:var(--primary);"></i> 10 generations per day</li>
+          <li><i data-lucide="check" style="color:var(--primary);"></i> Basic templates</li>
+          <li><i data-lucide="check" style="color:var(--primary);"></i> Local data storage</li>
+          <li><i data-lucide="x" style="color:#666;"></i> Advanced analytics</li>
+          <li><i data-lucide="x" style="color:#666;"></i> Export features</li>
+        </ul>
+        <button class="select-btn" type="button">Get Started Free</button>
+      </div>
+
+      <div class="pricing-card popular">
+        <h3 class="plan-name">Pro</h3>
+        <div class="plan-price">$29<span>/month</span></div>
+        <ul class="plan-features">
+          <li><i data-lucide="check" style="color:var(--primary);"></i> Unlimited generations</li>
+          <li><i data-lucide="check" style="color:var(--primary);"></i> Premium templates</li>
+          <li><i data-lucide="check" style="color:var(--primary);"></i> Advanced analytics</li>
+          <li><i data-lucide="check" style="color:var(--primary);"></i> Export to PDF/Doc</li>
+          <li><i data-lucide="check" style="color:var(--primary);"></i> Priority support</li>
+        </ul>
+        <button class="select-btn" type="button">Start Free Trial</button>
+      </div>
+
+      <div class="pricing-card">
+        <h3 class="plan-name">Enterprise</h3>
+        <div class="plan-price">$99<span>/month</span></div>
+        <ul class="plan-features">
+          <li><i data-lucide="check" style="color:var(--primary);"></i> Everything in Pro</li>
+          <li><i data-lucide="check" style="color:var(--primary);"></i> Team collaboration</li>
+          <li><i data-lucide="check" style="color:var(--primary);"></i> API access</li>
+          <li><i data-lucide="check" style="color:var(--primary);"></i> Custom templates</li>
+          <li><i data-lucide="check" style="color:var(--primary);"></i> Dedicated account manager</li>
+        </ul>
+        <button class="select-btn" type="button">Contact Sales</button>
+      </div>
+    </div>
+  </div>
+
+  <script>lucide.createIcons();</script>
+  <script>
+    document.querySelectorAll('.select-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.textContent.includes('Free') || btn.textContent.includes('Trial')) {
+          localStorage.setItem('pro_plan', 'monthly');
+          alert('🎉 Pro Plan Activated! (Demo)');
+          window.location.href = '../index.html';
+        } else {
+          alert('Contact sales@contentspark.ai for Enterprise plan');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

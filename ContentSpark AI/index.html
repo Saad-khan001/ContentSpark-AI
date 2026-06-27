@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ContentSpark AI - AI Content Creation Platform</title>
+  <script>
+    const authenticated = localStorage.getItem('authenticated');
+    if (!authenticated) {
+      window.location.replace('./landing.html');
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="./CSS/style.css" />
+  <link rel="stylesheet" href="./CSS/saas-ui.css" />
+  <style>
+    .dashboard-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .dashboard-icon-wrapper {
+      width: 60px;
+      height: 60px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--primary), #9ff000);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dashboard-icon-wrapper i {
+      color: #000;
+      width: 32px;
+      height: 32px;
+    }
+
+    .profile-clickable {
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .profile-clickable:hover {
+      transform: scale(1.05);
+    }
+
+    .profile-popup {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      min-width: 280px;
+      max-width: 320px;
+      z-index: 9999;
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 40px rgba(0,0,0,.4);
+    }
+
+    .profile-popup.show {
+      display: flex;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .profile-popup-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .profile-popup-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 16px;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #000;
+    }
+
+    .profile-stat {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .profile-stat:last-child {
+      border-bottom: none;
+    }
+
+    .profile-stat-label {
+      color: var(--text-muted);
+    }
+
+    .profile-stat-value {
+      color: var(--primary);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-icon">
+          <i data-lucide="sparkles"></i>
+        </div>
+        <div class="logo-text">
+          <h2>ContentSpark</h2>
+          <span>AI Workspace</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-link active">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="./Pages/generator.html" class="nav-link">
+          <i data-lucide="wand-sparkles"></i>
+          <span>Generator</span>
+        </a>
+
+        <a href="./Pages/templates.html" class="nav-link">
+          <i data-lucide="files"></i>
+          <span>Templates</span>
+        </a>
+
+        <a href="./Pages/favorites.html" class="nav-link">
+          <i data-lucide="heart"></i>
+          <span>Favorites</span>
+        </a>
+
+        <a href="./Pages/history.html" class="nav-link">
+          <i data-lucide="history"></i>
+          <span>History</span>
+        </a>
+
+        <a href="./Pages/analytics.html" class="nav-link">
+          <i data-lucide="bar-chart-3"></i>
+          <span>Analytics</span>
+        </a>
+
+        <a href="./Pages/pricing.html" class="nav-link">
+          <i data-lucide="credit-card"></i>
+          <span>Pricing</span>
+        </a>
+
+        <a href="./Pages/settings.html" class="nav-link">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </a>
+
+        <a href="#" class="nav-link" id="logout-btn">
+          <i data-lucide="log-out"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+
+      <div class="premium-card upgrade-card">
+        <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem;">
+          <i data-lucide="crown" style="color:var(--primary);width:24px;height:24px;"></i>
+          <h3 style="margin:0;font-weight:700;">Pro Workspace</h3>
+        </div>
+
+        <ul style="list-style:none;padding:0;margin:0 0 1rem 0;color:var(--text-muted);font-size:.85rem;line-height:2;">
+          <li style="display:flex;align-items:center;gap:.4rem;"><i data-lucide="check" style="width:16px;height:16px;color:var(--primary);"></i> Unlimited AI generations</li>
+          <li style="display:flex;align-items:center;gap:.4rem;"><i data-lucide="check" style="width:16px;height:16px;color:var(--primary);"></i> Advanced analytics</li>
+          <li style="display:flex;align-items:center;gap:.4rem;"><i data-lucide="check" style="width:16px;height:16px;color:var(--primary);"></i> Premium templates</li>
+          <li style="display:flex;align-items:center;gap:.4rem;"><i data-lucide="check" style="width:16px;height:16px;color:var(--primary);"></i> Priority support</li>
+        </ul>
+
+        <button id="upgrade-btn" type="button" class="hero-btn">
+          Upgrade Now - Start Free Trial
+        </button>
+      </div>
+
+      <div id="pro-modal-backdrop" class="modal-backdrop" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pro-modal-title">
+          <div class="modal-header">
+            <h3 id="pro-modal-title">Go Pro</h3>
+            <button id="pro-modal-close" class="modal-close" type="button" aria-label="Close">&times;</button>
+          </div>
+          <p>Select a plan to unlock the Pro Workspace (demo).</p>
+          <div class="modal-actions">
+            <button class="pro-select" data-plan="monthly" type="button">Monthly Pro - $29</button>
+            <button class="pro-select" data-plan="yearly" type="button">Yearly Pro - $99</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <button class="upgrade-card-mobile" id="mobile-upgrade-btn">
+      <i data-lucide="crown"></i> Pro
+    </button>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="search-box">
+          <i data-lucide="search"></i>
+          <input type="text" placeholder="Search anything..." />
+        </div>
+
+        <div class="topbar-actions">
+          <button class="icon-btn" id="notification-btn" type="button" aria-label="Notifications">
+            <i data-lucide="bell"></i>
+            <span class="notification-badge" id="notification-count" style="display:none;">0</span>
+          </button>
+
+          <div class="notification-popup" id="notification-popup">
+            <div class="notification-item">No notifications yet</div>
+          </div>
+
+          <button class="icon-btn" id="theme-toggle-btn" type="button" aria-label="Toggle theme">
+            <i data-lucide="moon"></i>
+          </button>
+
+          <div class="profile profile-clickable" id="profile-trigger">
+            <div class="avatar">
+              <span id="user-initial">S</span>
+            </div>
+            <div class="profile-info">
+              <strong id="user-name">Saad</strong>
+              <span>Creator</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Profile Popup -->
+      <div class="profile-popup" id="profile-popup">
+        <div class="profile-popup-header">
+          <div class="profile-popup-avatar" id="profile-popup-initial">S</div>
+          <div>
+            <div style="font-weight:600;" id="profile-popup-name">Saad</div>
+            <div style="color:var(--text-muted);font-size:.85rem;">Creator Plan</div>
+          </div>
+        </div>
+        <div>
+          <div class="profile-stat">
+            <span class="profile-stat-label">Ideas Generated</span>
+            <span class="profile-stat-value" id="profile-stat-ideas">0</span>
+          </div>
+          <div class="profile-stat">
+            <span class="profile-stat-label">Favorites</span>
+            <span class="profile-stat-value" id="profile-stat-favs">0</span>
+          </div>
+          <div class="profile-stat">
+            <span class="profile-stat-label">Credits Left</span>
+            <span class="profile-stat-value">50</span>
+          </div>
+        </div>
+        <button id="view-profile-btn" class="hero-btn" style="width:100%;padding:.8rem;">
+          View Full Profile
+        </button>
+      </div>
+
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">
+            <i data-lucide="zap"></i>
+            AI Powered Workspace
+          </span>
+
+          <h1>
+            Create Better Content<br/>
+            <span style="color:var(--primary);">Faster Than Ever</span>
+          </h1>
+
+          <p id="typing-text">
+            Generate Blog Ideas...
+          </p>
+
+          <div style="display:flex;gap:1rem;align-items:center;">
+            <button class="hero-btn" id="start-creating-btn">
+              Start Creating
+            </button>
+            <a href="./Pages/pricing.html" style="color:var(--text-muted);text-decoration:none;font-size:.9rem;">View Pricing Plans →</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i data-lucide="sparkles"></i>
+          </div>
+          <div>
+            <h3 id="stat-ideas">0</h3>
+            <p>Ideas Generated</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i data-lucide="heart"></i>
+          </div>
+          <div>
+            <h3 id="stat-favs">0</h3>
+            <p>Favorites</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i data-lucide="zap"></i>
+          </div>
+          <div>
+            <h3 id="stat-credits">50</h3>
+            <p>Credits Remaining</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i data-lucide="crown"></i>
+          </div>
+          <div>
+            <h3 id="stat-plan">Free</h3>
+            <p>Current Plan</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <div class="glass-card">
+          <div class="card-header">
+            <h2>Recent Activity</h2>
+          </div>
+
+          <div class="activity-list" id="recent-activity">
+            <div class="activity-item">
+              Welcome to ContentSpark AI! <span style="color:var(--primary);">✨</span>
+            </div>
+            <div class="activity-item">
+              Start by generating ideas on the Generator page.
+            </div>
+            <div class="activity-item">
+              Upgrade to Pro for unlimited features!
+            </div>
+          </div>
+
+        </div>
+
+        <div class="glass-card">
+          <div class="card-header">
+            <h2>Quick Actions</h2>
+          </div>
+
+          <div class="quick-actions">
+            <button onclick="window.location.href='./Pages/generator.html'">
+              <i data-lucide="wand-sparkles"></i>
+              Generate Ideas
+            </button>
+
+            <button onclick="window.location.href='./Pages/templates.html'">
+              <i data-lucide="files"></i>
+              Browse Templates
+            </button>
+
+            <button onclick="window.location.href='./Pages/analytics.html'">
+              <i data-lucide="bar-chart-3"></i>
+              View Analytics
+            </button>
+
+            <button onclick="window.location.href='./Pages/favorites.html'">
+              <i data-lucide="heart"></i>
+              Open Favorites
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <script src="./JS/data.js"></script>
+  <script src="./JS/ui.js"></script>
+  <script src="./JS/app.js"></script>
+  <script>
+    // Set theme before styles load
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.body.setAttribute('data-theme', savedTheme);
+
+    const auth = JSON.parse(localStorage.getItem('authenticated') || '{}');
+    document.getElementById('user-name').textContent = auth.name || 'User';
+    document.getElementById('user-initial').textContent = (auth.name || 'U')[0];
+
+    const history = window.__csData?.getHistory() || [];
+    const favs = window.__csData?.getFavorites() || [];
+    document.getElementById('stat-ideas').textContent = history.length;
+    document.getElementById('stat-favs').textContent = favs.length;
+
+    // Profile popup stats
+    document.getElementById('profile-stat-ideas').textContent = history.length;
+    document.getElementById('profile-stat-favs').textContent = favs.length;
+    document.getElementById('profile-popup-name').textContent = auth.name || 'User';
+    document.getElementById('profile-popup-initial').textContent = (auth.name || 'U')[0];
+
+    const plan = localStorage.getItem('pro_plan') || 'free';
+    document.getElementById('stat-plan').textContent = plan === 'monthly' ? 'Pro Monthly' : plan === 'yearly' ? 'Pro Yearly' : 'Free';
+
+    // Profile click handler
+    document.getElementById('profile-trigger')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('profile-popup').classList.toggle('show');
+    });
+
+    document.getElementById('view-profile-btn')?.addEventListener('click', () => {
+      window.location.href = './Pages/settings.html';
+    });
+
+    // Close profile popup on outside click
+    document.addEventListener('click', (e) => {
+      const popup = document.getElementById('profile-popup');
+      const trigger = document.getElementById('profile-trigger');
+      if (popup && popup.classList.contains('show') && !trigger?.contains(e.target) && !popup.contains(e.target)) {
+        popup.classList.remove('show');
+      }
+    });
+
+    // Mobile upgrade button
+    const mobileUpgrade = document.getElementById('mobile-upgrade-btn');
+    if (mobileUpgrade) {
+      mobileUpgrade.addEventListener('click', () => {
+        const modal = document.getElementById('pro-modal-backdrop');
+        modal?.classList.add('show');
+      });
+    }
+
+    document.getElementById('start-creating-btn')?.addEventListener('click', () => {
+      window.location.href = './Pages/generator.html';
+    });
+
+    if (window.lucide) lucide.createIcons();
+  </script>
+</body>
+</html>

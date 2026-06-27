@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Templates | ContentSpark AI</title>
+  <script>
+    if (!localStorage.getItem('authenticated')) {
+      window.location.href = './auth.html';
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../CSS/style.css" />
+  <link rel="stylesheet" href="../CSS/saas-ui.css" />
+  <style>
+    .templates-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+.template-card {
+  background: rgba(255,255,255,0.02);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 1.8rem;
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme="light"] .template-card {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.template-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.4s;
+}
+
+.template-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-glow);
+  border-color: rgba(204,255,0,0.2);
+}
+
+[data-theme="light"] .template-card:hover {
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.template-card.favorited {
+  border-color: var(--primary);
+}
+
+[data-theme="light"] .template-card.favorited {
+  border-color: var(--primary);
+}
+
+    .template-card.favorited .template-heart {
+      color: var(--primary);
+    }
+
+    .template-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .template-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .template-heart {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      color: var(--text-muted);
+      width: 40px;
+      height: 40px;
+    }
+
+    .template-heart:hover {
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    .template-heart.favorited {
+      color: var(--primary);
+      background: rgba(204,255,0,0.15);
+    }
+
+    .template-category {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      background: rgba(204,255,0,0.15);
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .template-preview {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .template-action {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .template-btn {
+      flex: 1;
+      padding: 0.7rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+    }
+
+    .template-btn:hover {
+      background: rgba(204,255,0,0.15);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .template-btn.primary {
+      background: var(--primary);
+      color: #000;
+    }
+
+    .template-btn.primary:hover {
+      background: #b5e600;
+    }
+
+    .guide-card {
+      background: linear-gradient(135deg, rgba(204,255,0,0.05), rgba(255,255,255,0.02));
+      border: 1px solid rgba(204,255,0,0.15);
+    }
+
+    .guide-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: rgba(255,255,255,0.02);
+      border-radius: 16px;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .guide-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .guide-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: rgba(204,255,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .guide-text {
+      color: var(--text);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: rgba(255,255,255,0.02);
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.08);
+      grid-column: 1 / -1;
+    }
+
+    .empty-state i {
+      width: 60px;
+      height: 60px;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      margin-bottom: 0.5rem;
+    }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.template-card {
+  animation: fadeInUp 0.4s ease;
+}
+
+@media (max-width: 768px) {
+  .templates-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .template-card {
+    padding: 1.2rem;
+  }
+
+  .template-btn {
+    padding: 0.6rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .templates-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .template-card {
+    padding: 1rem;
+    border-radius: 20px;
+  }
+
+  .guide-card {
+    padding: 1rem;
+  }
+
+  .guide-item {
+    padding: 0.8rem;
+    gap: 0.8rem;
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-icon"><i data-lucide="sparkles"></i></div>
+        <div class="logo-text">
+          <h2>ContentSpark</h2>
+          <span>AI Workspace</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="../index.html" class="nav-link"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+        <a href="./generator.html" class="nav-link"><i data-lucide="wand-sparkles"></i><span>Generator</span></a>
+        <a href="#" class="nav-link active"><i data-lucide="files"></i><span>Templates</span></a>
+        <a href="./favorites.html" class="nav-link"><i data-lucide="heart"></i><span>Favorites</span></a>
+        <a href="./history.html" class="nav-link"><i data-lucide="history"></i><span>History</span></a>
+        <a href="./analytics.html" class="nav-link"><i data-lucide="bar-chart-3"></i><span>Analytics</span></a>
+        <a href="./pricing.html" class="nav-link"><i data-lucide="credit-card"></i><span>Pricing</span></a>
+        <a href="./settings.html" class="nav-link"><i data-lucide="settings"></i><span>Settings</span></a>
+        <a href="#" class="nav-link" id="logout-btn"><i data-lucide="log-out"></i><span>Logout</span></a>
+      </nav>
+
+      <div class="premium-card upgrade-card">
+        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;">
+          <i data-lucide="crown" style="color:var(--primary);"></i>
+          <h3 style="margin:0;">Pro Workspace</h3>
+        </div>
+        <ul style="list-style:none;padding:0;margin:0 0 1rem 0;color:var(--text-muted);font-size:.85rem;line-height:2;">
+          <li style="display:flex;align-items:center;gap:.3rem;"><i data-lucide="check" style="width:14px;height:14px;color:var(--primary);"></i> Unlimited AI generations</li>
+          <li style="display:flex;align-items:center;gap:.3rem;"><i data-lucide="check" style="width:14px;height:14px;color:var(--primary);"></i> Advanced analytics</li>
+          <li style="display:flex;align-items:center;gap:.3rem;"><i data-lucide="check" style="width:14px;height:14px;color:var(--primary);"></i> Premium templates</li>
+          <li style="display:flex;align-items:center;gap:.3rem;"><i data-lucide="check" style="width:14px;height:14px;color:var(--primary);"></i> Priority support</li>
+        </ul>
+        <button id="upgrade-btn" type="button" class="hero-btn">Upgrade Now</button>
+      </div>
+
+      <div id="pro-modal-backdrop" class="modal-backdrop" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pro-modal-title">
+          <div class="modal-header">
+            <h3 id="pro-modal-title">Go Pro</h3>
+            <button id="pro-modal-close" class="modal-close" type="button" aria-label="Close">&times;</button>
+          </div>
+          <p>Select a plan to unlock the Pro Workspace (demo).</p>
+          <div class="modal-actions">
+            <button class="pro-select" data-plan="monthly" type="button">Monthly Pro</button>
+            <button class="pro-select" data-plan="yearly" type="button">Yearly Pro</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <button class="upgrade-card-mobile" id="mobile-upgrade-btn">
+      <i data-lucide="crown"></i> Pro
+    </button>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="search-box">
+          <i data-lucide="search"></i>
+          <input type="text" placeholder="Search templates..." id="template-search" />
+        </div>
+
+<div class="topbar-actions">
+           <button class="icon-btn" id="notification-btn" type="button" aria-label="Notifications">
+             <i data-lucide="bell"></i>
+             <span class="notification-badge" id="notification-count" style="display:none;">0</span>
+           </button>
+
+           <div class="notification-popup" id="notification-popup">
+             <div class="notification-item">No notifications yet</div>
+           </div>
+
+           <button class="icon-btn" id="theme-toggle-btn" type="button" aria-label="Toggle theme">
+             <i data-lucide="moon"></i>
+           </button>
+           <div class="profile profile-clickable" id="profile-trigger">
+             <div class="avatar">S</div>
+             <div class="profile-info">
+               <strong>Saad</strong>
+               <span>Creator</span>
+             </div>
+           </div>
+
+           <div class="profile-popup" id="profile-popup">
+             <div class="profile-popup-header">
+               <div class="profile-popup-avatar">S</div>
+               <div>
+                 <div style="font-weight:600;">Saad</div>
+                 <div style="color:var(--text-muted);font-size:.85rem;">Creator Plan</div>
+               </div>
+             </div>
+             <div>
+               <div class="profile-stat">
+                 <span class="profile-stat-label">Templates</span>
+                 <span class="profile-stat-value" id="profile-stat-templates">0</span>
+               </div>
+               <div class="profile-stat">
+                 <span class="profile-stat-label">Favorites</span>
+                 <span class="profile-stat-value" id="profile-stat-favs">0</span>
+               </div>
+             </div>
+             <button id="view-profile-btn" class="hero-btn" style="width:100%;padding:.8rem;">
+               View Full Profile
+             </button>
+           </div>
+         </div>
+       </header>
+
+      <section class="hero" style="margin-bottom:2rem;">
+        <div class="hero-content">
+          <span class="hero-badge"><i data-lucide="files"></i>&nbsp;Templates Library</span>
+          <h1>Premium Templates</h1>
+          <p>Select a template below to instantly generate content.</p>
+        </div>
+      </section>
+
+      <div class="templates-grid" id="templates-grid"></div>
+
+      <div class="glass-card guide-card">
+        <div class="card-header">
+          <h2>How to use templates</h2>
+        </div>
+        <div class="guide-item">
+          <div class="guide-num">1</div>
+          <div class="guide-text">Browse and select a template below.</div>
+        </div>
+        <div class="guide-item">
+          <div class="guide-num">2</div>
+          <div class="guide-text">Click "Use Template" to prefill the generator.</div>
+        </div>
+        <div class="guide-item">
+          <div class="guide-num">3</div>
+          <div class="guide-text">Generate ideas instantly and save favorites.</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>lucide.createIcons();</script>
+  <script src="../JS/data.js"></script>
+  <script src="../JS/ui.js"></script>
+  <script src="../JS/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to ContentSpark AI</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../CSS/style.css" />
+  <link rel="stylesheet" href="../CSS/saas-ui.css" />
+  <style>
+    .auth-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(1200px circle at 10% 20%, rgba(204,255,0,0.05), transparent),
+                  radial-gradient(800px circle at 90% 80%, rgba(204,255,0,0.03), transparent);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-bg-animation {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      opacity: 0.3;
+    }
+
+    .auth-bg-animation::before {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--primary), transparent);
+      top: -200px;
+      left: -100px;
+      animation: pulse 8s ease-in-out infinite;
+    }
+
+    .auth-bg-animation::after {
+      content: '';
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--primary), transparent);
+      bottom: -100px;
+      right: -50px;
+      animation: pulse 10s ease-in-out infinite reverse;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.3); opacity: 0.5; }
+    }
+
+    .auth-card {
+      background: rgba(15, 15, 15, 0.7);
+      backdrop-filter: blur(30px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 28px;
+      padding: 3rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), transparent, var(--primary));
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .auth-logo {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1.5rem;
+      background: linear-gradient(135deg, var(--primary), #9ff000);
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .auth-logo::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, var(--primary), transparent, var(--primary));
+      opacity: 0.5;
+      animation: rotate 4s linear infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .auth-header h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.3rem;
+      background: linear-gradient(135deg, #fff, var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .auth-header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .auth-switch {
+      display: flex;
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      padding: 0.4rem;
+      margin-bottom: 2rem;
+      gap: 0.3rem;
+    }
+
+    .auth-switch button {
+      flex: 1;
+      padding: 0.9rem;
+      border: none;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .auth-switch button.active {
+      background: linear-gradient(135deg, var(--primary), #9ff000);
+      color: #000;
+    }
+
+    .auth-form .input-group {
+      margin-bottom: 1.3rem;
+    }
+
+    .auth-form label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrapper i {
+      position: absolute;
+      left: 1.2rem;
+      color: var(--text-muted);
+      width: 18px;
+      height: 18px;
+    }
+
+    .auth-form input {
+      width: 100%;
+      padding: 1rem 1rem 1rem 3rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .auth-form input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(204,255,0,0.15);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .auth-btn {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 16px;
+      border: none;
+      background: linear-gradient(135deg, var(--primary), #9ff000);
+      color: #000;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(45deg, rgba(255,255,255,0.3), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .auth-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(204,255,0,0.25);
+    }
+
+    .auth-btn:hover::before {
+      opacity: 1;
+    }
+
+    .auth-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .auth-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .error-message, .success-message {
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+
+    .error-message { color: #ef4444; }
+    .success-message { color: #22c55e; }
+
+    /* Loader Animation */
+    .auth-loader {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .auth-loader.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .loader-content {
+      text-align: center;
+    }
+
+    .loader-logo {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 1.5rem;
+      background: linear-gradient(135deg, var(--primary), #9ff000);
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: spin 1.5s linear infinite;
+    }
+
+    .loader-logo i {
+      width: 50px;
+      height: 50px;
+      color: #000;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg) scale(1); }
+      to { transform: rotate(360deg) scale(1.1); }
+    }
+
+    .loader-text {
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-bg-animation"></div>
+
+  <div class="auth-loader" id="auth-loader">
+    <div class="loader-content">
+      <div class="loader-logo"><i data-lucide="sparkles"></i></div>
+      <div class="loader-text">Signing you in...</div>
+    </div>
+  </div>
+
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo"><i data-lucide="sparkles"></i></div>
+        <h1>Welcome to ContentSpark</h1>
+        <p>AI-Powered Content Creation Platform</p>
+      </div>
+
+      <div class="auth-switch">
+        <button id="signin-tab" class="active">Sign In</button>
+        <button id="signup-tab">Sign Up</button>
+      </div>
+
+      <form class="auth-form" id="auth-form">
+        <div id="name-field" class="input-group" style="display:none;">
+          <label for="name">Full Name</label>
+          <div class="input-wrapper">
+            <i data-lucide="user"></i>
+            <input type="text" id="name" placeholder="Enter your full name" autocomplete="name" />
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="email">Email Address</label>
+          <div class="input-wrapper">
+            <i data-lucide="mail"></i>
+            <input type="email" id="email" placeholder="you@example.com" required autocomplete="email" />
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="password">Password</label>
+          <div class="input-wrapper">
+            <i data-lucide="lock"></i>
+            <input type="password" id="password" placeholder="Enter your password" required autocomplete="current-password" />
+            <button type="button" class="password-toggle" id="toggle-password" aria-label="Toggle password">
+              <i data-lucide="eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="error-message" id="error-msg"></div>
+        <div class="success-message" id="success-msg"></div>
+
+        <button type="submit" class="auth-btn">Sign In to Dashboard</button>
+
+        <div class="auth-footer">
+          <p>By continuing, you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>lucide.createIcons();</script>
+  <script>
+    const signinTab = document.getElementById('signin-tab');
+    const signupTab = document.getElementById('signup-tab');
+    const nameField = document.getElementById('name-field');
+    const authForm = document.getElementById('auth-form');
+    const loader = document.getElementById('auth-loader');
+
+    function showLoader(text) {
+      loader.classList.add('show');
+      loader.querySelector('.loader-text').textContent = text || 'Signing you in...';
+    }
+
+    function hideLoader() {
+      loader.classList.remove('show');
+    }
+
+    // Toggle password visibility
+    document.getElementById('toggle-password')?.addEventListener('click', () => {
+      const password = document.getElementById('password');
+      const type = password.type === 'password' ? 'text' : 'password';
+      password.type = type;
+      document.getElementById('toggle-password').innerHTML = type === 'password' ? '<i data-lucide="eye"></i>' : '<i data-lucide="eye-off"></i>';
+      lucide.createIcons();
+    });
+
+    // Switch between signin/signup
+    signinTab?.addEventListener('click', () => {
+      signinTab.classList.add('active');
+      signupTab.classList.remove('active');
+      nameField.style.display = 'none';
+      authForm.querySelector('button[type="submit"]').textContent = 'Sign In to Dashboard';
+    });
+
+    signupTab?.addEventListener('click', () => {
+      signupTab.classList.add('active');
+      signinTab.classList.remove('active');
+      nameField.style.display = 'block';
+      authForm.querySelector('button[type="submit"]').textContent = 'Create Account';
+    });
+
+    // Handle form submission
+    authForm?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const name = document.getElementById('name').value;
+      const isSignIn = signinTab.classList.contains('active');
+
+      if (!email || !password) {
+        document.getElementById('error-msg').textContent = 'Please fill in all required fields';
+        document.getElementById('error-msg').style.display = 'block';
+        return;
+      }
+
+      if (!isSignIn && !name) {
+        document.getElementById('error-msg').textContent = 'Please enter your full name';
+        document.getElementById('error-msg').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('error-msg').style.display = 'none';
+      showLoader(isSignIn ? 'Signing you in...' : 'Creating your account...');
+
+      // Mock authentication
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+
+      setTimeout(() => {
+        if (isSignIn) {
+          // Sign In
+          if (!users[email] || users[email].password !== password) {
+            hideLoader();
+            document.getElementById('error-msg').textContent = 'Invalid email or password';
+            document.getElementById('error-msg').style.display = 'block';
+            return;
+          }
+          localStorage.setItem('authenticated', JSON.stringify({ email, name: users[email].name }));
+        } else {
+          // Sign Up
+          if (users[email]) {
+            hideLoader();
+            document.getElementById('error-msg').textContent = 'User already exists. Please sign in.';
+            document.getElementById('error-msg').style.display = 'block';
+            return;
+          }
+          users[email] = { name, password, createdAt: new Date().toISOString() };
+          localStorage.setItem('users', JSON.stringify(users));
+          localStorage.setItem('authenticated', JSON.stringify({ email, name }));
+        }
+
+        setTimeout(() => {
+          window.location.href = '../index.html';
+        }, 1000);
+      }, 1500);
+    });
+
+    // If already authenticated, redirect
+    window.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('authenticated')) {
+        window.location.href = '../index.html';
+      }
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
